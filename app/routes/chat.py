@@ -1,9 +1,7 @@
- # Conversa com Nutri AI
-
-from fastapi import APIRouter, Request, HTTPException
+# app/routes/chat.py
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from app.services.openai_services import gerar_resposta
-from app.services.shopify_services import buscar_produtos
+from app.services.mock_services import gerar_resposta, buscar_produtos  # Usando os mocks
 
 router = APIRouter()
 
@@ -17,9 +15,17 @@ class ChatResponse(BaseModel):
 
 @router.post("/", response_model=ChatResponse)
 async def chat_interativo(body: ChatRequest):
+    """
+    Rota para interagir com o chatbot, gerar respostas e buscar produtos simulados.
+    """
     try:
-        resposta_ia = gerar_resposta(body.mensagem, body.contexto)
-        produtos_sugeridos = buscar_produtos(resposta_ia)
+        # Gerando a resposta mockada para a mensagem do usuário
+        resposta_ia = gerar_resposta(body.mensagem, body.contexto)  
+        
+        # Buscando produtos com base na resposta da NutriAI (mockada)
+        produtos_sugeridos = buscar_produtos(resposta_ia)  
+        
         return ChatResponse(resposta=resposta_ia, produtos=produtos_sugeridos)
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

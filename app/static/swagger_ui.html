@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Chatbot NutriAI - API Documentation</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="title">Chatbot NutriAI</div>
+        <div class="box">
+            <!-- Mensagens dinâmicas serão adicionadas aqui -->
+        </div>
+        <div class="typing-area">
+            <div class="input-field">
+                <input type="text" id="user-input" placeholder="Digite sua dúvida" required onkeyup="checkEnter(event)">
+                <button onclick="sendMessage()">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para enviar mensagem ao pressionar "Enter"
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+
+        // Função para enviar a mensagem para a API FastAPI
+        function sendMessage() {
+            const inputField = document.getElementById("user-input");
+            const userMessage = inputField.value.trim();
+            if (userMessage === "") return;
+
+            // Adicionar a mensagem do usuário à caixa de chat
+            addMessage(userMessage, 'user');
+
+            // Enviar a mensagem para a API FastAPI
+            fetch("http://127.0.0.1:8000/chat/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    mensagem: userMessage,
+                    contexto: []  // Pode ser estendido para incluir mensagens anteriores, se necessário
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const botResponse = data.resposta;
+                addMessage(botResponse, 'bot');
+            })
+            .catch(error => {
+                console.error('Erro ao enviar mensagem:', error);
+                addMessage("Desculpe, houve um erro ao processar sua solicitação.", 'bot');
+            });
+
+            // Limpar o campo de entrada
+            inputField.value = "";
+            inputField.focus();
+        }
+
+        // Função para adicionar mensagens à caixa de chat
+        function addMessage(message, sender) {
+            const chatBox = document.querySelector(".box");
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("item", sender);
+            messageElement.innerHTML = `
+                <div class="icon">
+                    <i class="fa ${sender === 'user' ? 'fa-user' : 'fa-robot'}"></i>
+                </div>
+                <div class="msg">
+                    <p>${message}</p>
+                </div>
+            `;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight; // Rolagem automática
+        }
+    </script>
+</body>
+</html>
