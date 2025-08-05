@@ -1,12 +1,10 @@
-# Comunicação OpenAI
-
-import os
+# app/services/openai_services.py
 import openai
+import os
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def gerar_resposta(mensagem: str, contexto: list) -> str:
-    
     try:
         mensagens = [
             {"role": "system", "content": "Você é uma nutricionista virtual que cria dietas personalizadas."},

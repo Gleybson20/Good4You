@@ -1,15 +1,26 @@
-# Consultas à Shopify 
-
-from fastapi import APIRouter, Query, HTTPException
-from typing import List
-from app.services.shopify_services import buscar_produtos
+# app/routes/products.py
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
+from app.BD.Database import SessionLocal
+from app.services.database_services import adicionar_produto, buscar_produtos
 
 router = APIRouter()
 
-@router.get("/")
-async def buscar_produtos_endpoint(termo: str = Query(..., description="Termo para buscar produtos na Shopify")):
+def get_db():
+    db = SessionLocal()
     try:
-        produtos = buscar_produtos(termo)
-        return {"produtos": produtos}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        yield db
+    finally:
+        db.close()
+
+@router.post("/produtos/")
+async def criar_produto(nome: str, descricao: str, preco: float, calorias: float, 
+                        proteinas: float, carboidratos: float, gorduras: float, categoria_id: int, 
+                        db: Session = Depends(get_db)):
+    produto = adicionar_produto(db, nome, descricao, preco, calorias, proteinas, carboidratos, gorduras, categoria_id)
+    return produto
+
+@router.get("/produtos/")
+async def buscar_produtos_endpoint(termo: str, db: Session = Depends(get_db)):
+    produtos = buscar_produtos(db, termo)
+    return {"produtos": produtos}
