@@ -1,9 +1,8 @@
 # app/routes/chat.py
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from app.services.openai_services import gerar_resposta
-from app.services.shopify_services import buscar_produtos_nutricionais  # Se necessário
-from app.services.dieta_services import gerar_dieta_usuario
+from app.services.openai.openai_services import gerar_resposta
+from app.services.shopify.shopify_services import buscar_produtos_nutricionais  # Se necessário
 
 router = APIRouter()
 
@@ -21,9 +20,8 @@ async def chat_interativo(body: ChatRequest):
     try:
         resposta_ia = gerar_resposta(body.mensagem, body.contexto)
         produtos_sugeridos = buscar_produtos_nutricionais(resposta_ia)
-        dieta_usuario = gerar_dieta_usuario(body.usuario_id)
 
-        return ChatResponse(resposta=resposta_ia, dieta=dieta_usuario)
+        return ChatResponse(resposta=resposta_ia)
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

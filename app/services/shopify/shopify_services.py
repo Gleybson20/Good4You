@@ -5,6 +5,7 @@ SHOPIFY_API_KEY = 'sua-chave-api'
 SHOPIFY_STORE_URL = 'sua-loja.myshopify.com'
 SHOPIFY_API_VERSION = '2025-01'
 
+
 def buscar_produtos_nutricionais(termo: str):
     """
     Função para buscar produtos na Shopify e extrair informações nutricionais.
