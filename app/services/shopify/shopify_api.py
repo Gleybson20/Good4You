@@ -1,6 +1,7 @@
 import requests
 from app.utils.context_manager import log_error
 
+
 SHOPIFY_SHOP_URL = "https://your-shop.myshopify.com/admin/api/2021-07"
 SHOPIFY_ACCESS_TOKEN = "your_access_token"
 

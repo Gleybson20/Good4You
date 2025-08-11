@@ -1,10 +1,11 @@
+# app/BD/database.py
+
 from flask_sqlalchemy import SQLAlchemy
 
-# Instância do banco de dados
+# Instancia o objeto db (SQLAlchemy)
 db = SQLAlchemy()
 
-# Função para configurar a base de dados
+# Função para inicializar o banco de dados no aplicativo
 def init_db(app):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'  # ou outro banco
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    """Inicializa o banco de dados no app FastAPI"""
     db.init_app(app)
