@@ -8,3 +8,8 @@ sqlalchemy
 python-dotenv
 pytest
 httpx
+flask_sqlalchemy
+pandas
+flask
+tensorflow
+typing
